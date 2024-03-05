@@ -1,0 +1,25 @@
+services:
+  mysql:
+    image: mysql:8.2
+    command: --default-authentication-plugin=caching_sha2_password
+    ports:
+      - "3306:3306"
+    secrets:
+      - db-password
+    volumes:
+      - ./db/scripts:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+    networks:
+      - private
+    environment:
+      MYSQL_DATABASE: netflixDB
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-password
+    restart: always
+networks:
+  public:
+  private:
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: ./db/secrets/db-password.txt
